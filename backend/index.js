@@ -4,6 +4,7 @@ const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const swaggerUi = require('swagger-ui-express');
 const { PrismaClient } = require('@prisma/client');
+const ApiError = require('./utils/apiError');
 
 const swaggerSpec = require('./swagger');
 const authRoutes = require('./routes/auth');
@@ -27,8 +28,10 @@ const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173,http:/
 app.disable('x-powered-by');
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error('Not allowed by CORS'));
+    if (!origin || process.env.CORS_ORIGIN === '*' || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new ApiError(403, 'Not allowed by CORS'));
   },
 }));
 app.use(express.json({ limit: '10kb' }));
