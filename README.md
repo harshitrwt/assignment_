@@ -1,4 +1,4 @@
-# Primetrade - TaskVoid App
+# PrimetradeAI - TaskVoid App
 
 This project is a scalable REST API backend and a matching React frontend for a Task Management application (TaskVoid), built as part of the Primetrade assignment. It features JWT-based authentication, role-based access control (Admin vs. User), and full CRUD functionality with a modern, high-contrast "Hyper-Saturated Fluid" design aesthetic.
 
@@ -22,11 +22,18 @@ The application is deployed and accessible live.
 - Validation & Error Handling: Centralized error handling middleware and input validation ensuring empty or malicious payloads are rejected gracefully.
 - Swagger Documentation: Auto-generated interactive API documentation available at /api/docs.
 
+<img width="923" height="911" alt="image" src="https://github.com/user-attachments/assets/3945386b-f03b-4667-b117-29108eb7c964" />
+
+
 ### Frontend (React, Vite, Vanilla CSS)
 - Hyper-Saturated Fluid Design: A visually striking UI with glassmorphism, heavy typography, and high contrast.
 - Split Layout Auth Pages: Full-screen layout with floating glass cards for Login and Register.
 - Dashboard: Distinct views depending on the role. Standard users see their tasks; Admins see a "System Overview" of all tasks.
 - Responsive & Fast: Built with Vite for optimized builds and fast load times.
+
+<img width="1824" height="731" alt="image" src="https://github.com/user-attachments/assets/158a0ebb-5fe6-4401-a1ed-383ab45ee52a" />
+
+<img width="817" height="697" alt="image" src="https://github.com/user-attachments/assets/0b97d166-b67d-43f0-8822-9a5109fc1c09" />
 
 ## How to Use the Application
 
