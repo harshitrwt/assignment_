@@ -22,39 +22,44 @@ export default function Register() {
 
   return (
     <div className="auth-wrapper">
-      <div className="card auth-card">
-        <h1 className="brand text-center mb-8">TaskManager</h1>
-        <h2 className="text-center mb-4" style={{ fontSize: '1.25rem', fontWeight: 600 }}>Create an account</h2>
-        
-        {error && <div className="alert alert-error">{error}</div>}
-        {success && <div className="alert alert-success">{success}</div>}
-        
-        <form onSubmit={handleRegister}>
-          <div className="form-group">
-            <label className="form-label">Username</label>
-            <input
-              type="text"
-              className="form-input"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+      <div className="liquid-section slide-up">
+        <div className="container text-left">
+          <h1 className="text-hero mb-4">Join<br/>The Void.</h1>
+          <p className="text-sub">Start your frictionless journey here.</p>
+        </div>
+      </div>
+      
+      <div className="void-section flex-1">
+        <div className="glass-card auth-glass glass-float">
+          <h2 className="text-sub dark-text mb-8" style={{ color: 'white', opacity: 1, fontSize: '1.5rem', fontWeight: 700 }}>Create Account</h2>
+          {error && <div className="alert-error">{error}</div>}
+          {success && <div className="alert-success">{success}</div>}
+          <form onSubmit={handleRegister}>
+            <div className="mb-4">
+              <label className="form-label">USERNAME</label>
+              <input
+                type="text"
+                className="form-input"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-8">
+              <label className="form-label">PASSWORD</label>
+              <input
+                type="password"
+                className="form-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="btn btn-yellow w-full mb-4">REGISTER NOW</button>
+          </form>
+          <div className="text-center">
+            <Link to="/login" className="link-text">Already a member? Sign In</Link>
           </div>
-          <div className="form-group">
-            <label className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="btn btn-primary mb-4">Register</button>
-        </form>
-        
-        <div className="text-center">
-          <Link to="/login" className="link">Already have an account? Sign In</Link>
         </div>
       </div>
     </div>

@@ -23,38 +23,45 @@ export default function Login() {
 
   return (
     <div className="auth-wrapper">
-      <div className="card auth-card">
-        <h1 className="brand text-center mb-8">TaskManager</h1>
-        <h2 className="text-center mb-4" style={{ fontSize: '1.25rem', fontWeight: 600 }}>Sign in to your account</h2>
-        
-        {error && <div className="alert alert-error">{error}</div>}
-        
-        <form onSubmit={handleLogin}>
-          <div className="form-group">
-            <label className="form-label">Username</label>
-            <input
-              type="text"
-              className="form-input"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+      <div className="liquid-section slide-up">
+        <div className="container text-left">
+          <h1 className="text-hero mb-4">Access<br/>The Void.</h1>
+          <p className="text-sub">Frictionless task management.</p>
+        </div>
+      </div>
+      
+      <div className="void-section flex-1">
+        <div className="glass-card auth-glass glass-float">
+          <h2 className="text-sub dark-text mb-8" style={{ color: 'white', opacity: 1, fontSize: '1.5rem', fontWeight: 700 }}>Sign In</h2>
+          {error && <div className="alert-error">{error}</div>}
+          <form onSubmit={handleLogin}>
+            <div className="mb-4">
+              <label className="form-label">USERNAME</label>
+              <input
+                type="text"
+                className="form-input"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                placeholder="Enter username (e.g., admin)"
+              />
+            </div>
+            <div className="mb-8">
+              <label className="form-label">PASSWORD</label>
+              <input
+                type="password"
+                className="form-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Enter password"
+              />
+            </div>
+            <button type="submit" className="btn btn-yellow w-full mb-4">ENTER SYSTEM</button>
+          </form>
+          <div className="text-center">
+            <Link to="/register" className="link-text">Need an account? Register</Link>
           </div>
-          <div className="form-group">
-            <label className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="btn btn-primary mb-4">Sign In</button>
-        </form>
-        
-        <div className="text-center">
-          <Link to="/register" className="link">Don't have an account? Register</Link>
         </div>
       </div>
     </div>
