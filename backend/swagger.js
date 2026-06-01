@@ -4,7 +4,7 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Primetrade Assignment API',
+      title: 'TaskManager API',
       version: '1.0.0',
     },
     components: {
@@ -22,7 +22,7 @@ const options = {
       },
     ],
     paths: {
-      '/api/auth/register': {
+      '/api/v1/auth/register': {
         post: {
           summary: 'Register a new user',
           tags: ['Auth'],
@@ -35,8 +35,7 @@ const options = {
                   required: ['username', 'password'],
                   properties: {
                     username: { type: 'string' },
-                    password: { type: 'string' },
-                    role: { type: 'string' }
+                    password: { type: 'string' }
                   }
                 }
               }
@@ -44,11 +43,11 @@ const options = {
           },
           responses: {
             '201': { description: 'User registered successfully' },
-            '400': { description: 'User already exists' }
+            '400': { description: 'Validation error' }
           }
         }
       },
-      '/api/auth/login': {
+      '/api/v1/auth/login': {
         post: {
           summary: 'Login a user',
           tags: ['Auth'],
@@ -73,54 +72,43 @@ const options = {
           }
         }
       },
-      '/api/products': {
+      '/api/v1/tasks': {
         get: {
-          summary: 'Get all products',
-          tags: ['Products'],
+          summary: 'Get all tasks',
+          tags: ['Tasks'],
           responses: {
-            '200': { description: 'List of products' }
+            '200': { description: 'List of tasks' }
           }
         },
         post: {
-          summary: 'Create a product (Admin only)',
-          tags: ['Products'],
+          summary: 'Create a task',
+          tags: ['Tasks'],
           requestBody: {
             required: true,
             content: {
               'application/json': {
                 schema: {
                   type: 'object',
-                  required: ['name', 'description', 'price'],
+                  required: ['title'],
                   properties: {
-                    name: { type: 'string' },
+                    title: { type: 'string' },
                     description: { type: 'string' },
-                    price: { type: 'number' }
+                    status: { type: 'string' }
                   }
                 }
               }
             }
           },
           responses: {
-            '201': { description: 'Product created' },
-            '403': { description: 'Access denied' }
+            '201': { description: 'Task created' },
+            '400': { description: 'Validation error' }
           }
         }
       },
-      '/api/products/{id}': {
-        get: {
-          summary: 'Get product by ID',
-          tags: ['Products'],
-          parameters: [
-            { in: 'path', name: 'id', required: true, schema: { type: 'integer' } }
-          ],
-          responses: {
-            '200': { description: 'Product data' },
-            '404': { description: 'Product not found' }
-          }
-        },
+      '/api/v1/tasks/{id}': {
         put: {
-          summary: 'Update a product (Admin only)',
-          tags: ['Products'],
+          summary: 'Update a task',
+          tags: ['Tasks'],
           parameters: [
             { in: 'path', name: 'id', required: true, schema: { type: 'integer' } }
           ],
@@ -131,26 +119,29 @@ const options = {
                 schema: {
                   type: 'object',
                   properties: {
-                    name: { type: 'string' },
+                    title: { type: 'string' },
                     description: { type: 'string' },
-                    price: { type: 'number' }
+                    status: { type: 'string' }
                   }
                 }
               }
             }
           },
           responses: {
-            '200': { description: 'Product updated' }
+            '200': { description: 'Task updated' },
+            '403': { description: 'Access denied' },
+            '404': { description: 'Task not found' }
           }
         },
         delete: {
-          summary: 'Delete a product (Admin only)',
-          tags: ['Products'],
+          summary: 'Delete a task',
+          tags: ['Tasks'],
           parameters: [
             { in: 'path', name: 'id', required: true, schema: { type: 'integer' } }
           ],
           responses: {
-            '200': { description: 'Product deleted' }
+            '200': { description: 'Task deleted' },
+            '403': { description: 'Access denied' }
           }
         }
       }

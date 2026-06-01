@@ -11,7 +11,7 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { username, password });
+      const res = await axios.post('http://localhost:5000/api/v1/auth/login', { username, password });
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('role', res.data.role);
       localStorage.setItem('username', res.data.username);
@@ -22,10 +22,13 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-container">
+    <div className="auth-wrapper">
       <div className="card auth-card">
-        <h1 className="title">Primetrade</h1>
-        {error && <div className="message message-error">{error}</div>}
+        <h1 className="brand text-center mb-8">TaskManager</h1>
+        <h2 className="text-center mb-4" style={{ fontSize: '1.25rem', fontWeight: 600 }}>Sign in to your account</h2>
+        
+        {error && <div className="alert alert-error">{error}</div>}
+        
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <label className="form-label">Username</label>
@@ -47,8 +50,9 @@ export default function Login() {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary">Login</button>
+          <button type="submit" className="btn btn-primary mb-4">Sign In</button>
         </form>
+        
         <div className="text-center">
           <Link to="/register" className="link">Don't have an account? Register</Link>
         </div>

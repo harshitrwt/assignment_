@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Dashboard() {
-  const [products, setProducts] = useState([]);
-  const [name, setName] = useState('');
+  const [tasks, setTasks] = useState([]);
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
+  const [status, setStatus] = useState('Pending');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
   const token = localStorage.getItem('token');
@@ -20,54 +19,50 @@ export default function Dashboard() {
       navigate('/login');
       return;
     }
-    fetchProducts();
+    fetchTasks();
   }, [token, navigate]);
 
-  const fetchProducts = async () => {
+  const fetchTasks = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/products', {
+      const res = await axios.get('http://localhost:5000/api/v1/tasks', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setProducts(res.data);
+      setTasks(res.data);
     } catch (err) {
       if (err.response?.status === 401) {
         handleLogout();
       } else {
-        setError('Failed to fetch products');
+        setError('Failed to fetch tasks');
       }
     }
   };
 
-  const handleCreateProduct = async (e) => {
+  const handleCreateTask = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
     try {
-      await axios.post('http://localhost:5000/api/products', 
-        { name, description, price: parseFloat(price) },
+      await axios.post('http://localhost:5000/api/v1/tasks', 
+        { title, description, status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setSuccess('Product created successfully');
-      setName('');
+      setTitle('');
       setDescription('');
-      setPrice('');
-      fetchProducts();
+      setStatus('Pending');
+      fetchTasks();
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to create product');
+      setError(err.response?.data?.error || 'Failed to create task');
     }
   };
 
-  const handleDeleteProduct = async (id) => {
+  const handleDeleteTask = async (id) => {
     setError('');
-    setSuccess('');
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`, {
+      await axios.delete(`http://localhost:5000/api/v1/tasks/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setSuccess('Product deleted successfully');
-      fetchProducts();
+      fetchTasks();
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to delete product');
+      setError(err.response?.data?.error || 'Failed to delete task');
     }
   };
 
@@ -79,79 +74,72 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container">
-      <div className="header-flex">
-        <h2>Welcome, {username} ({role})</h2>
-        <button onClick={handleLogout} className="btn btn-danger">Logout</button>
+    <div>
+      <div className="header">
+        <div className="brand">TaskManager</div>
+        <div className="flex items-center gap-4">
+          <span className="text-muted">Logged in as <strong>{username}</strong> ({role})</span>
+          <button onClick={handleLogout} className="btn" style={{ border: '1px solid var(--border)', color: 'var(--text-main)', background: 'transparent' }}>Logout</button>
+        </div>
       </div>
 
-      {error && <div className="message message-error">{error}</div>}
-      {success && <div className="message message-success">{success}</div>}
+      <div className="container">
+        {error && <div className="alert alert-error">{error}</div>}
 
-      {role === 'admin' && (
-        <div className="card" style={{ marginBottom: '2rem' }}>
-          <h3 style={{ marginBottom: '1rem' }}>Create New Product</h3>
-          <form onSubmit={handleCreateProduct}>
-            <div className="grid">
-              <div className="form-group">
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="Product Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
+        {role === 'user' && (
+          <div className="card mb-8">
+            <h2 className="mb-4" style={{ fontSize: '1.25rem', fontWeight: 600 }}>Create New Task</h2>
+            <form onSubmit={handleCreateTask} className="grid items-end" style={{ gridTemplateColumns: '1fr 2fr 1fr auto' }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Title</label>
+                <input type="text" className="form-input" value={title} onChange={(e) => setTitle(e.target.value)} required />
               </div>
-              <div className="form-group">
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="Description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  required
-                />
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Description</label>
+                <input type="text" className="form-input" value={description} onChange={(e) => setDescription(e.target.value)} />
               </div>
-              <div className="form-group">
-                <input
-                  type="number"
-                  className="form-input"
-                  placeholder="Price"
-                  step="0.01"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  required
-                />
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label className="form-label">Status</label>
+                <select className="form-input" value={status} onChange={(e) => setStatus(e.target.value)}>
+                  <option value="Pending">Pending</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+              <button type="submit" className="btn btn-primary" style={{ height: '42px' }}>Add Task</button>
+            </form>
+          </div>
+        )}
+
+        <div className="mb-4 flex justify-between items-center">
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 600 }}>
+            {role === 'admin' ? 'System Overview (All Tasks)' : 'Your Tasks'}
+          </h2>
+          <span className="text-muted">{tasks.length} tasks total</span>
+        </div>
+
+        <div className="grid">
+          {tasks.map(task => (
+            <div key={task.id} className="task-card">
+              <div className="task-title">{task.title}</div>
+              <div className="task-desc">{task.description}</div>
+              <div className="task-footer">
+                <span className="task-status">{task.status}</span>
+                <div className="flex items-center gap-2">
+                  {role === 'admin' && task.user && (
+                    <span className="task-author">by @{task.user.username}</span>
+                  )}
+                  <button onClick={() => handleDeleteTask(task.id)} className="btn btn-danger" style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem' }}>
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
-            <button type="submit" className="btn btn-primary" style={{ width: 'auto' }}>
-              Add Product
-            </button>
-          </form>
+          ))}
+          {tasks.length === 0 && (
+            <div className="text-muted" style={{ gridColumn: '1 / -1' }}>No tasks found.</div>
+          )}
         </div>
-      )}
-
-      <div className="grid">
-        {products.map(product => (
-          <div key={product.id} className="card">
-            <h3 style={{ marginBottom: '0.5rem' }}>{product.name}</h3>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '1rem' }}>{product.description}</p>
-            <p style={{ fontWeight: 'bold', fontSize: '1.25rem', marginBottom: '1rem' }}>${product.price}</p>
-            {role === 'admin' && (
-              <button 
-                onClick={() => handleDeleteProduct(product.id)} 
-                className="btn btn-danger"
-                style={{ width: '100%' }}
-              >
-                Delete
-              </button>
-            )}
-          </div>
-        ))}
-        {products.length === 0 && (
-          <p style={{ color: 'var(--text-muted)' }}>No products available.</p>
-        )}
       </div>
     </div>
   );

@@ -8,7 +8,11 @@ const prisma = new PrismaClient();
 
 router.post('/register', async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password } = req.body;
+    if (!username || !password || typeof username !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({ error: 'Valid username and password are required' });
+    }
+
     const existingUser = await prisma.user.findUnique({ where: { username } });
     if (existingUser) return res.status(400).json({ error: 'User already exists' });
 
@@ -19,7 +23,7 @@ router.post('/register', async (req, res) => {
       data: {
         username,
         passwordHash,
-        role: role || 'user',
+        role: 'user',
       },
     });
 
@@ -32,6 +36,8 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
+    if (!username || !password) return res.status(400).json({ error: 'Credentials required' });
+
     const user = await prisma.user.findUnique({ where: { username } });
     if (!user) return res.status(400).json({ error: 'Invalid credentials' });
 
