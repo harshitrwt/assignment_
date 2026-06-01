@@ -20,7 +20,8 @@ export default function Register() {
     setError('');
     setSuccess('');
     try {
-      await axios.post('http://localhost:5000/api/v1/auth/register', { username, password });
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      await axios.post(`${API_URL}/api/v1/auth/register`, { username, password });
       setSuccess('Registration successful! Redirecting to login...');
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {

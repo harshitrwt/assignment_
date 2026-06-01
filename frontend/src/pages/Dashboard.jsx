@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const STATUS_OPTIONS = ['Pending', 'In Progress', 'Completed'];
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function StatusDropdown({ value, onChange, style }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -94,7 +95,7 @@ export default function Dashboard() {
 
   const fetchTasks = useCallback(async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/v1/tasks', {
+      const res = await axios.get(`${API_URL}/api/v1/tasks`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setTasks(res.data);
@@ -125,7 +126,7 @@ export default function Dashboard() {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/v1/tasks',
+      await axios.post(`${API_URL}/api/v1/tasks`,
         { title, description, status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -141,7 +142,7 @@ export default function Dashboard() {
 
   const handleDeleteTask = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/tasks/${id}`, {
+      await axios.delete(`${API_URL}/api/v1/tasks/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (editingTaskId === id) setEditingTaskId(null);
@@ -154,7 +155,7 @@ export default function Dashboard() {
 
   const handleStatusChange = async (task, newStatus) => {
     try {
-      await axios.put(`http://localhost:5000/api/v1/tasks/${task.id}`,
+      await axios.put(`${API_URL}/api/v1/tasks/${task.id}`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -186,7 +187,7 @@ export default function Dashboard() {
   const handleUpdateTask = async (e, taskId) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/v1/tasks/${taskId}`,
+      await axios.put(`${API_URL}/api/v1/tasks/${taskId}`,
         { title: editTitle, description: editDescription, status: editStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
