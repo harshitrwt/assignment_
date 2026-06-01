@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -8,8 +8,15 @@ export default function Login() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
     try {
       const res = await axios.post('http://localhost:5000/api/v1/auth/login', { username, password });
       localStorage.setItem('token', res.data.token);
@@ -42,6 +49,8 @@ export default function Login() {
                   className="form-input"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  maxLength="64"
+                  autoComplete="username"
                   required
                   placeholder="Enter username (e.g., admin)"
                 />
@@ -53,6 +62,9 @@ export default function Login() {
                   className="form-input"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  minLength="6"
+                  maxLength="128"
+                  autoComplete="current-password"
                   required
                   placeholder="Enter password"
                 />

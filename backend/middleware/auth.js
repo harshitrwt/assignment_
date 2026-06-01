@@ -1,21 +1,26 @@
 const jwt = require('jsonwebtoken');
+const ApiError = require('../utils/apiError');
 
 const authenticate = (req, res, next) => {
-  const token = req.header('Authorization')?.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'Access denied' });
+  const authHeader = req.header('Authorization');
+  const [scheme, token] = authHeader?.split(' ') || [];
+
+  if (scheme !== 'Bearer' || !token) {
+    return next(new ApiError(401, 'Bearer token is required'));
+  }
 
   try {
     const verified = jwt.verify(token, process.env.JWT_SECRET);
     req.user = verified;
     next();
   } catch (error) {
-    res.status(400).json({ error: 'Invalid token' });
+    next(new ApiError(401, 'Invalid or expired token'));
   }
 };
 
 const authorizeAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'Access denied. Admin only.' });
+    return next(new ApiError(403, 'Access denied. Admin only.'));
   }
   next();
 };

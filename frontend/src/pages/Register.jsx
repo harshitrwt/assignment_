@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -9,8 +9,16 @@ export default function Register() {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
+
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
     try {
       await axios.post('http://localhost:5000/api/v1/auth/register', { username, password });
       setSuccess('Registration successful! Redirecting to login...');
@@ -41,6 +49,8 @@ export default function Register() {
                   className="form-input"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  maxLength="64"
+                  autoComplete="username"
                   required
                 />
               </div>
@@ -51,6 +61,9 @@ export default function Register() {
                   className="form-input"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  minLength="6"
+                  maxLength="128"
+                  autoComplete="new-password"
                   required
                 />
               </div>

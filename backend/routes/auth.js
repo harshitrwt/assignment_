@@ -2,22 +2,20 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
+const ApiError = require('../utils/apiError');
+const { validateAuthInput } = require('../utils/validation');
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
   try {
-    const { username, password } = req.body;
-    if (!username || !password || typeof username !== 'string' || typeof password !== 'string') {
-      return res.status(400).json({ error: 'Valid username and password are required' });
-    }
+    const { username, password } = validateAuthInput(req.body);
 
     const existingUser = await prisma.user.findUnique({ where: { username } });
-    if (existingUser) return res.status(400).json({ error: 'User already exists' });
+    if (existingUser) throw new ApiError(409, 'User already exists');
 
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, salt);
+    const passwordHash = await bcrypt.hash(password, 12);
 
     const newUser = await prisma.user.create({
       data: {
@@ -27,27 +25,39 @@ router.post('/register', async (req, res) => {
       },
     });
 
-    res.status(201).json({ message: 'User registered successfully', userId: newUser.id });
+    res.status(201).json({
+      message: 'User registered successfully',
+      user: { id: newUser.id, username: newUser.username, role: newUser.role },
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    next(error);
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   try {
-    const { username, password } = req.body;
-    if (!username || !password) return res.status(400).json({ error: 'Credentials required' });
+    const { username, password } = validateAuthInput(req.body);
 
     const user = await prisma.user.findUnique({ where: { username } });
-    if (!user) return res.status(400).json({ error: 'Invalid credentials' });
+    if (!user) throw new ApiError(401, 'Invalid credentials');
 
     const validPassword = await bcrypt.compare(password, user.passwordHash);
-    if (!validPassword) return res.status(400).json({ error: 'Invalid credentials' });
+    if (!validPassword) throw new ApiError(401, 'Invalid credentials');
 
+    if (!process.env.JWT_SECRET) {
+      throw new ApiError(500, 'JWT secret is not configured');
+    }
     const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token, role: user.role, id: user.id, username: user.username });
+    res.json({
+      token,
+      expiresIn: '1h',
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      user: { id: user.id, username: user.username, role: user.role },
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    next(error);
   }
 });
 

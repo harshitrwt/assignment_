@@ -112,7 +112,7 @@ export default function Dashboard() {
       navigate('/login');
       return;
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    
     fetchTasks();
   }, [fetchTasks, navigate, token]);
 
@@ -235,6 +235,7 @@ export default function Dashboard() {
                   placeholder="Task Title"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
+                  maxLength="120"
                   required
                 />
                 <textarea
@@ -242,6 +243,7 @@ export default function Dashboard() {
                   placeholder="Description"
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
+                  maxLength="2000"
                   rows="3"
                 />
                 <StatusDropdown value={editStatus} onChange={setEditStatus} />
@@ -350,6 +352,7 @@ export default function Dashboard() {
               placeholder="Task Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              maxLength="120"
               required
             />
             <textarea
@@ -358,6 +361,7 @@ export default function Dashboard() {
               placeholder="Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              maxLength="2000"
               rows="1"
             />
             <StatusDropdown
