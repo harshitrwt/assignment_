@@ -1,55 +1,102 @@
-# Primetrade Backend Assignment
+# Primetrade - TaskVoid App
 
-## Overview
+This project is a complete, scalable REST API backend and a matching React frontend for a Task Management application (TaskVoid), built as part of the Primetrade assignment. It features JWT-based authentication, role-based access control (Admin vs. User), and full CRUD functionality with a stunning "Hyper-Saturated Fluid" aesthetic on the frontend.
 
-This project includes a scalable REST API backend built with Node.js, Express, and Prisma, connected to a Neon PostgreSQL database. It also features a basic React frontend to interact with the API. The system supports JWT authentication and role based access control for administrators and standard users.
+## 🚀 Features
 
-## Prerequisites
+### Backend (Node.js, Express, Prisma, PostgreSQL)
+- **Authentication:** Secure user registration and login with `bcryptjs` for password hashing and `jsonwebtoken` for secure session management.
+- **Role-Based Access Control (RBAC):**
+  - **User:** Can create tasks, view their own tasks, update task status (Pending -> In Progress -> Completed), and delete their own tasks.
+  - **Admin:** Automatically seeded (`admin` / `adminpassword`). Admins can view ALL users' tasks, create tasks, edit any task's status, and delete ANY task.
+- **CRUD Operations:** Full RESTful operations on the `Task` entity.
+- **API Versioning:** All endpoints are versioned under `/api/v1/`.
+- **Validation & Error Handling:** Centralized error handling middleware and input validation ensuring empty or malicious payloads are rejected gracefully.
+- **Swagger Documentation:** Auto-generated interactive API documentation available at `/api/docs`.
 
-* Node.js installed
-* PostgreSQL database connection string (Neon or local)
+### Frontend (React, Vite, Vanilla CSS)
+- **Hyper-Saturated Fluid Design:** A visually striking UI with glassmorphism, heavy typography, and high contrast.
+- **Split Layout Auth Pages:** Full-screen yellow layout with floating glass cards for Login and Register.
+- **Dashboard:** Distinct views depending on the role. Standard users see their tasks; Admins see a "System Overview" of all tasks.
+- **Status Colors:** Visual indicators for task progress (Red = Pending, Orange = In Progress, Green = Completed).
+- **Responsive & Fast:** Built with Vite for blazing-fast HMR and optimized builds.
 
-## Backend Setup
+---
 
-1. Navigate to the backend directory
-   cd backend
-2. Install dependencies
-   npm install
-3. Configure your database by editing the .env file with your valid connection string.
-4. Push the schema to your database
-   npx prisma db push
-5. Generate the Prisma client
-   npx prisma generate
-6. Start the server
-   node index.js
+## 💻 Local Setup & Execution
 
-The server runs on port 5000 by default. API documentation is available at http://localhost:5000/api/docs
+### 1. Database Setup
+We use **Neon PostgreSQL**. You can use the provided connection string or create your own.
 
-## Frontend Setup
+### 2. Backend Setup
+Open a terminal and run the following commands:
+```bash
+cd backend
+npm install
 
-1. Navigate to the frontend directory
-   cd frontend
-2. Install dependencies
-   npm install
-3. Start the development server
-   npm run dev
+# Push the schema to your database
+npx prisma db push
 
-The frontend will run on the default Vite port (usually 5173). Ensure the backend is running simultaneously for the full experience.
+# Generate the Prisma client
+npx prisma generate
 
-## Features
+# Start the server (runs on port 5000)
+npm run start
+```
+*Note: Make sure your `backend/.env` contains your `DATABASE_URL` and `JWT_SECRET`.*
 
-* User authentication with secure password hashing
-* Role based access control (admin and user roles)
-* CRUD operations for products
-* Secure JWT handling and validation
-* API documentation via Swagger
+**Access Swagger API Docs Locally:** [http://localhost:5000/api/docs](http://localhost:5000/api/docs)
 
-## Scalability Note
+### 3. Frontend Setup
+Open a second terminal window and run:
+```bash
+cd frontend
+npm install
 
-The current architecture uses a monolithic approach with Express and Prisma which is suitable for initial development. To scale this application for production traffic, several strategies can be employed
+# Start the Vite development server
+npm run dev
+```
+**Access the Frontend Locally:** [http://localhost:5173](http://localhost:5173)
 
-* Microservices Architecture: Break down the application into smaller services like an Auth Service and a Product Service to scale them independently based on load.
-* Caching: Implement Redis to cache frequently accessed data, such as product lists, to reduce database query load and improve response times.
-* Load Balancing: Deploy the backend behind a load balancer (like Nginx or AWS ALB) to distribute incoming traffic across multiple instances of the Node application.
-* Database Optimization: Utilize database connection pooling, read replicas for heavy read operations, and indexing on frequently queried columns.
-* Containerization: Dockerize the application and use orchestration tools like Kubernetes for automated deployment, scaling, and management.
+---
+
+## 🌍 Free Deployment Guide (Render)
+
+If you want to host this online for free, **Render (render.com)** is the perfect choice for both the Node.js Backend and the React Frontend.
+
+### Deploying the Backend on Render (Web Service)
+1. Push your code to a GitHub repository.
+2. Go to Render Dashboard -> **New** -> **Web Service**.
+3. Connect your GitHub repository.
+4. **Settings:**
+   - **Root Directory:** `backend`
+   - **Build Command:** `npm install && npx prisma generate`
+   - **Start Command:** `node index.js`
+5. **Environment Variables:**
+   - Add `DATABASE_URL` (your Neon connection string).
+   - Add `JWT_SECRET` (e.g., `my-super-secret-key-123`).
+   - Add `CORS_ORIGIN` (set this to your frontend URL once deployed, or `*` for testing).
+6. Click **Deploy**. Once live, you will get a URL like `https://taskvoid-api.onrender.com`.
+7. *You can access your live Swagger Docs at `https://taskvoid-api.onrender.com/api/docs`.*
+
+### Deploying the Frontend on Render (Static Site)
+1. Go to Render Dashboard -> **New** -> **Static Site**.
+2. Connect the same GitHub repository.
+3. **Settings:**
+   - **Root Directory:** `frontend`
+   - **Build Command:** `npm install && npm run build`
+   - **Publish Directory:** `frontend/dist`
+4. **Environment Variables:**
+   - Note: You must update the Axios base URLs in your frontend code (e.g., `Login.jsx`, `Dashboard.jsx`) to point to your live Render backend URL instead of `http://localhost:5000`, OR use a `.env` file in the frontend with `VITE_API_URL`.
+5. Click **Deploy**.
+
+---
+
+## 🏗 Scalability & Security Architecture
+
+If this application were to scale to thousands of users, the following architectural upgrades would be implemented:
+1. **Microservices:** Split the Auth logic and the Task logic into separate decoupled services communicating via gRPC or message queues (RabbitMQ/Kafka).
+2. **Caching:** Implement **Redis** to cache user sessions and frequently accessed task lists to take the load off the PostgreSQL database.
+3. **Load Balancing:** Deploy multiple instances of the Node.js backend behind an AWS Application Load Balancer or Nginx reverse proxy.
+4. **Dockerization:** Containerize both the frontend and backend using Docker and deploy them via Kubernetes (K8s) for automatic scaling and self-healing.
+5. **Rate Limiting:** Implement `express-rate-limit` to prevent brute force attacks on the login and registration endpoints.
