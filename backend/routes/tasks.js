@@ -8,7 +8,9 @@ const prisma = new PrismaClient();
 router.get('/', authenticate, async (req, res) => {
   try {
     if (req.user.role === 'admin') {
-      const allTasks = await prisma.task.findMany({ include: { user: { select: { username: true } } } });
+      const allTasks = await prisma.task.findMany({
+        include: { user: { select: { id: true, username: true, role: true } } },
+      });
       return res.json(allTasks);
     } else {
       const userTasks = await prisma.task.findMany({ where: { userId: req.user.id } });
@@ -46,13 +48,32 @@ router.put('/:id', authenticate, async (req, res) => {
     const task = await prisma.task.findUnique({ where: { id: taskId } });
     if (!task) return res.status(404).json({ error: 'Task not found' });
     
-    if (req.user.role !== 'admin' && task.userId !== req.user.id) {
+    const isOwner = task.userId === req.user.id;
+    const hasContentEdit = title !== undefined || description !== undefined;
+
+    if (req.user.role !== 'admin' && !isOwner) {
       return res.status(403).json({ error: 'Access denied' });
+    }
+
+    if (hasContentEdit && !isOwner) {
+      return res.status(403).json({ error: 'You can edit only your own tasks' });
+    }
+
+    const updateData = {};
+    if (title !== undefined) {
+      if (!title || typeof title !== 'string') return res.status(400).json({ error: 'Valid title is required' });
+      updateData.title = title;
+    }
+    if (description !== undefined) updateData.description = description || '';
+    if (status !== undefined) updateData.status = status;
+
+    if (Object.keys(updateData).length === 0) {
+      return res.status(400).json({ error: 'No updates provided' });
     }
 
     const updatedTask = await prisma.task.update({
       where: { id: taskId },
-      data: { title, description, status },
+      data: updateData,
     });
     res.json(updatedTask);
   } catch (error) {

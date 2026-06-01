@@ -78,6 +78,7 @@ body {
 }
 
 .dashboard-content {
+  display: flow-root;
   padding: 0 2rem 4rem 2rem;
   max-width: 900px;
   margin: -3rem auto 0 auto;
@@ -137,6 +138,44 @@ body {
 .form-input-dark::placeholder { color: rgba(255,255,255,0.4); }
 .form-input-dark option { color: var(--bg-onyx); }
 
+.form-textarea {
+  border-radius: 24px;
+  line-height: 1.5;
+  min-height: 3.25rem;
+  max-height: 12rem;
+  resize: vertical;
+}
+
+.form-select-dark {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 3rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.25rem) 50%,
+    calc(100% - 0.9rem) 50%;
+  background-repeat: no-repeat;
+  background-size: 0.35rem 0.35rem;
+}
+
+.form-select-dark:focus {
+  background-color: rgba(255,255,255,0.1);
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+}
+
+select.form-select-dark option {
+  background-color: var(--surface-charcoal);
+  color: var(--pure-white);
+}
+
+select.form-select-dark option:checked {
+  background-color: var(--deep-gray);
+}
+
 .form-label {
   display: block; margin-bottom: 0.5rem; margin-left: 1rem; font-size: 0.875rem; font-weight: 500; color: var(--bg-onyx);
 }
@@ -163,6 +202,69 @@ body {
 
 .btn-small { padding: 0.5rem 1rem; font-size: 0.75rem; }
 
+.status-select {
+  position: relative;
+  width: 100%;
+}
+
+.status-select-trigger {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  min-height: 3.25rem;
+  text-align: left;
+}
+
+.status-select:focus-within .status-select-trigger {
+  border-color: var(--cyber-yellow);
+  background: rgba(255,255,255,0.1);
+}
+
+.status-select-caret {
+  border-bottom: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 0.5rem;
+  transform: rotate(45deg);
+  width: 0.5rem;
+}
+
+.status-select-menu {
+  background: var(--surface-charcoal);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px;
+  box-shadow: 0 18px 35px rgba(0,0,0,0.45);
+  left: 0;
+  overflow: hidden;
+  padding: 0.35rem;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  z-index: 60;
+}
+
+.status-select-option {
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  color: var(--pure-white);
+  cursor: pointer;
+  display: block;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+.status-select-option:hover,
+.status-select-option.is-active {
+  background: rgba(255,255,255,0.1);
+}
+
 /* Status Badges */
 .status-badge {
   position: absolute; top: -15px; right: -15px;
@@ -187,7 +289,84 @@ body {
 .mb-2 { margin-bottom: 0.5rem; }
 .mb-4 { margin-bottom: 1rem; }
 .mb-8 { margin-bottom: 2rem; }
+.mb-0 { margin-bottom: 0; }
 .mt-4 { margin-top: 1rem; }
+.mt-8 { margin-top: 2rem; }
+.pt-4 { padding-top: 1rem; }
+
+.create-task-card {
+  margin-top: 6rem;
+}
+
+.task-create-form {
+  align-items: flex-start;
+}
+
+.task-card {
+  min-height: 180px;
+}
+
+.task-card-title,
+.task-description {
+  overflow-wrap: anywhere;
+}
+
+.task-description {
+  max-height: 7rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+  white-space: pre-wrap;
+}
+
+.task-edit-form {
+  flex-grow: 1;
+  gap: 1rem;
+}
+
+.task-edit-textarea {
+  min-height: 6rem;
+}
+
+.task-card-footer {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+}
+
+.task-card-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.task-section {
+  margin-top: 3rem;
+}
+
+.task-section:first-of-type {
+  margin-top: 0;
+}
+
+.empty-task-card {
+  padding: 2rem;
+}
+
+.toast-notice {
+  background: var(--cyber-yellow);
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 18px;
+  bottom: 1.5rem;
+  box-shadow: 0 18px 35px rgba(0,0,0,0.35);
+  color: var(--bg-onyx);
+  font-size: 0.875rem;
+  font-weight: 700;
+  max-width: min(360px, calc(100vw - 2rem));
+  padding: 1rem 1.25rem;
+  position: fixed;
+  right: 1.5rem;
+  z-index: 100;
+}
 
 .grid-cards {
   display: grid;
@@ -212,4 +391,20 @@ body {
   .text-hero { text-align: center; }
   .split-left .flex { justify-content: center; }
   .form-label { text-align: left; }
+  .create-task-card {
+    margin-top: 4rem;
+  }
+  .task-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .task-card-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .task-card-actions {
+    justify-content: flex-start;
+    margin-left: 0;
+  }
 }
