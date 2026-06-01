@@ -22,45 +22,45 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-wrapper">
-      <div className="liquid-section slide-up">
-        <div className="container text-left">
+    <div className="full-yellow-screen slide-up">
+      <div className="split-layout">
+        <div className="split-left">
           <h1 className="text-hero mb-4">Access<br/>The Void.</h1>
           <p className="text-sub">Frictionless task management.</p>
         </div>
-      </div>
-      
-      <div className="void-section flex-1">
-        <div className="glass-card auth-glass glass-float">
-          <h2 className="text-sub dark-text mb-8" style={{ color: 'white', opacity: 1, fontSize: '1.5rem', fontWeight: 700 }}>Sign In</h2>
-          {error && <div className="alert-error">{error}</div>}
-          <form onSubmit={handleLogin}>
-            <div className="mb-4">
-              <label className="form-label">USERNAME</label>
-              <input
-                type="text"
-                className="form-input"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                placeholder="Enter username (e.g., admin)"
-              />
+        
+        <div className="split-right">
+          <div className="glass-card auth-glass">
+            <h2 className="text-sub mb-8" style={{ color: 'var(--bg-onyx)', opacity: 1, fontSize: '1.5rem', fontWeight: 900 }}>Sign In</h2>
+            {error && <div className="alert-error">{error}</div>}
+            <form onSubmit={handleLogin}>
+              <div className="mb-4 text-left">
+                <label className="form-label">USERNAME</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  placeholder="Enter username (e.g., admin)"
+                />
+              </div>
+              <div className="mb-8 text-left">
+                <label className="form-label">PASSWORD</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  placeholder="Enter password"
+                />
+              </div>
+              <button type="submit" className="btn btn-primary w-full mb-4">ENTER SYSTEM</button>
+            </form>
+            <div className="text-center">
+              <Link to="/register" className="link-text">Need an account? Register</Link>
             </div>
-            <div className="mb-8">
-              <label className="form-label">PASSWORD</label>
-              <input
-                type="password"
-                className="form-input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="Enter password"
-              />
-            </div>
-            <button type="submit" className="btn btn-yellow w-full mb-4">ENTER SYSTEM</button>
-          </form>
-          <div className="text-center">
-            <Link to="/register" className="link-text">Need an account? Register</Link>
           </div>
         </div>
       </div>

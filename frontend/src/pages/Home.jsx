@@ -2,33 +2,24 @@ import { Link } from 'react-router-dom';
 
 export default function Home() {
   return (
-    <div className="auth-wrapper">
-      <div className="liquid-section slide-up" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center' }}>
-        <div className="container text-left w-full">
-          <h1 className="text-hero mb-4">Task<br/>Manager.</h1>
-          <p className="text-sub mb-8" style={{ maxWidth: '600px' }}>
+    <div className="full-yellow-screen slide-up">
+      <div className="split-layout">
+        <div className="split-left">
+          <h1 className="text-hero mb-4">Task<br/>Void.</h1>
+          <p className="text-sub mb-8">
             High-contrast fluidity meets ultimate productivity. Manage your tasks with frictionless speed.
           </p>
           <div className="flex gap-4">
             <Link to="/login" className="btn btn-primary" style={{ fontSize: '1.25rem', padding: '1.25rem 2.5rem' }}>ENTER SYSTEM</Link>
-            <Link to="/register" className="btn btn-outline" style={{ fontSize: '1.25rem', padding: '1.25rem 2.5rem', color: 'var(--bg-onyx)', borderColor: 'var(--bg-onyx)' }}>CREATE ACCOUNT</Link>
           </div>
         </div>
-      </div>
-      <div className="void-section flex-1">
-        <div className="container">
-          <div className="grid-cards mt-4 slide-up" style={{ animationDelay: '0.2s' }}>
-            <div className="glass-card">
-              <h3 className="mb-4" style={{ fontSize: '1.5rem', fontWeight: 700 }}>Premium Design</h3>
-              <p className="text-body" style={{ color: 'rgba(255,255,255,0.7)' }}>Aggressive saturation meets deep void for maximum contrast and focus.</p>
-            </div>
-            <div className="glass-card" style={{ animationDelay: '0.4s' }}>
-              <h3 className="mb-4" style={{ fontSize: '1.5rem', fontWeight: 700 }}>Role Based</h3>
-              <p className="text-body" style={{ color: 'rgba(255,255,255,0.7)' }}>Distinct views for Users and Admins. Built securely from the ground up.</p>
-            </div>
-            <div className="glass-card" style={{ animationDelay: '0.6s' }}>
-              <h3 className="mb-4" style={{ fontSize: '1.5rem', fontWeight: 700 }}>Blazing Fast</h3>
-              <p className="text-body" style={{ color: 'rgba(255,255,255,0.7)' }}>Optimized endpoints ensuring frictionless transactions everywhere.</p>
+        <div className="split-right">
+          <div className="glass-card auth-glass" style={{ textAlign: 'center' }}>
+            <h2 className="text-sub mb-4" style={{ color: 'var(--bg-onyx)', fontWeight: 900 }}>Ready to dive in?</h2>
+            <p style={{ color: 'var(--bg-onyx)', opacity: 0.8, marginBottom: '2rem' }}>Experience the ultimate frictionless workflow.</p>
+            <div className="flex flex-col gap-4">
+              <Link to="/login" className="btn btn-primary w-full">Sign In</Link>
+              <Link to="/register" className="btn btn-outline w-full">Register</Link>
             </div>
           </div>
         </div>
