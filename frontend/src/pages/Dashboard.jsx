@@ -90,6 +90,13 @@ export default function Dashboard() {
     return 'Pending';
   };
 
+  const getStatusClass = (status) => {
+    if (status === 'Pending') return 'status-pending';
+    if (status === 'In Progress') return 'status-progress';
+    if (status === 'Completed') return 'status-completed';
+    return 'status-pending';
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
@@ -98,107 +105,105 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="auth-wrapper">
-      <div className="liquid-section slide-up" style={{ paddingBottom: '12rem' }}>
-        <div className="container flex justify-between items-center w-full">
+    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-onyx)' }}>
+      {/* Big Yellow Header Section */}
+      <header className="dashboard-header">
+        <div className="header-container">
           <div>
-            <h1 className="text-hero">Task<br/>Manager.</h1>
-            <p className="text-sub">Welcome back, {username} ({role})</p>
+            <h1 className="nav-brand">Task<br/>Void.</h1>
+            <p style={{ color: 'var(--bg-onyx)', opacity: 0.8, marginTop: '0.5rem', fontWeight: 500 }}>
+              Welcome, {username} ({role})
+            </p>
           </div>
-          <button onClick={handleLogout} className="btn btn-primary">LOGOUT</button>
+          <button onClick={handleLogout} className="btn btn-outline" style={{ padding: '0.75rem 2rem' }}>LOGOUT</button>
         </div>
-      </div>
+      </header>
 
-      <div className="void-section flex-1">
-        <div className="container" style={{ marginTop: '-10rem' }}>
-          
-          {error && <div className="alert-error slide-up">{error}</div>}
-          {success && <div className="alert-success slide-up">{success}</div>}
+      {/* Main Content Area - Compressed towards center */}
+      <div className="dashboard-content slide-up">
+        {error && <div className="alert-error">{error}</div>}
+        {success && <div className="alert-success">{success}</div>}
 
-          {role === 'user' && (
-            <div className="glass-card slide-up mb-8" style={{ padding: '2rem' }}>
-              <h2 className="text-sub dark-text mb-4" style={{ color: 'white', fontWeight: 700 }}>Create New Task</h2>
-              <form onSubmit={handleCreateTask} className="flex gap-4 items-center">
-                <input
-                  type="text"
-                  className="form-input mb-0"
-                  placeholder="Task Title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
-                <input
-                  type="text"
-                  className="form-input mb-0"
-                  placeholder="Description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-                <select
-                  className="form-input mb-0"
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                >
-                  <option value="Pending" style={{color: 'black'}}>Pending</option>
-                  <option value="In Progress" style={{color: 'black'}}>In Progress</option>
-                  <option value="Completed" style={{color: 'black'}}>Completed</option>
-                </select>
-                <button type="submit" className="btn btn-yellow" style={{ whiteSpace: 'nowrap' }}>
-                  ADD TASK
-                </button>
-              </form>
-            </div>
-          )}
+        {/* Removed role check so Admin can create tasks too */}
+        <div className="glass-card mb-8">
+          <h2 className="mb-4" style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>Create New Task</h2>
+          <form onSubmit={handleCreateTask} className="flex gap-4 items-center" style={{ flexWrap: 'wrap' }}>
+            <input
+              type="text"
+              className="form-input form-input-dark mb-0"
+              style={{ flex: 1, minWidth: '200px' }}
+              placeholder="Task Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              className="form-input form-input-dark mb-0"
+              style={{ flex: 2, minWidth: '250px' }}
+              placeholder="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <select
+              className="form-input form-input-dark mb-0"
+              style={{ flex: 1, minWidth: '150px' }}
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+            >
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <button type="submit" className="btn btn-yellow" style={{ whiteSpace: 'nowrap' }}>
+              ADD TASK
+            </button>
+          </form>
+        </div>
 
-          <div className="mb-4 flex justify-between items-center slide-up" style={{ animationDelay: '0.1s' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>
-              {role === 'admin' ? 'System Overview (All Tasks)' : 'Your Tasks'}
-            </h2>
-            <span className="text-label" style={{ color: 'white' }}>{tasks.length} tasks total</span>
-          </div>
+        <div className="mb-4 flex justify-between items-center mt-8">
+          <h2 style={{ fontSize: '2rem', fontWeight: 700, color: 'white' }}>
+            {role === 'admin' ? 'System Overview (All Tasks)' : 'Your Tasks'}
+          </h2>
+          <span className="text-label" style={{ color: 'white', opacity: 0.5, fontSize: '0.875rem' }}>
+            {tasks.length} TASKS TOTAL
+          </span>
+        </div>
 
-          <div className="grid-cards slide-up" style={{ animationDelay: '0.2s' }}>
-            {tasks.map(task => (
-              <div key={task.id} className="glass-card glass-float" style={{ animationDelay: `${Math.random() * 2}s`, padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-                <div className="pill-badge">{task.status}</div>
-                <h3 className="mb-2" style={{ fontSize: '1.5rem', fontWeight: 700 }}>{task.title}</h3>
-                <p className="text-body mb-4" style={{ color: 'rgba(255,255,255,0.7)', flexGrow: 1 }}>{task.description}</p>
+        <div className="grid-cards">
+          {tasks.map(task => (
+            <div key={task.id} className="glass-card flex-col" style={{ padding: '2rem' }}>
+              <div className={`status-badge ${getStatusClass(task.status)}`}>{task.status}</div>
+              <h3 className="mb-2" style={{ fontSize: '1.5rem', fontWeight: 700, paddingRight: '4rem' }}>{task.title}</h3>
+              <p className="text-body mb-4" style={{ color: 'rgba(255,255,255,0.7)', flexGrow: 1 }}>{task.description}</p>
+              
+              <div className="flex justify-between items-center mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                {role === 'admin' && task.user ? (
+                  <span className="text-label" style={{ color: 'white', opacity: 0.8 }}>BY @{task.user.username}</span>
+                ) : <span></span>}
                 
-                <div className="flex justify-between items-center mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                  {role === 'admin' && task.user ? (
-                    <span className="text-label" style={{ color: 'white' }}>by @{task.user.username}</span>
-                  ) : <span></span>}
-                  
-                  <div className="flex gap-2">
-                    {role === 'user' && (
-                      <button 
-                        onClick={() => handleStatusChange(task, getNextStatus(task.status))} 
-                        className="btn btn-yellow btn-small"
-                      >
-                        {task.status === 'Completed' ? 'REOPEN' : 'NEXT STATUS'}
-                      </button>
-                    )}
-                    <button 
-                      onClick={() => handleDeleteTask(task.id)} 
-                      className="btn btn-outline btn-small"
-                    >
-                      DELETE
-                    </button>
-                  </div>
+                <div className="flex gap-2" style={{ marginLeft: 'auto' }}>
+                  <button 
+                    onClick={() => handleStatusChange(task, getNextStatus(task.status))} 
+                    className="btn btn-yellow btn-small"
+                  >
+                    {task.status === 'Completed' ? 'REOPEN' : 'NEXT'}
+                  </button>
+                  <button 
+                    onClick={() => handleDeleteTask(task.id)} 
+                    className="btn btn-outline-light btn-small"
+                  >
+                    DELETE
+                  </button>
                 </div>
               </div>
-            ))}
-            {tasks.length === 0 && (
-              <div className="glass-card">
-                <p className="text-body text-center">No tasks found in the void.</p>
-              </div>
-            )}
-          </div>
-          
-          <div className="text-center mt-8 slide-up" style={{ animationDelay: '0.4s' }}>
-            <p className="text-label" style={{ opacity: 0.5 }}>TaskManager | 2026</p>
-          </div>
-
+            </div>
+          ))}
+          {tasks.length === 0 && (
+            <div className="glass-card" style={{ gridColumn: '1 / -1' }}>
+              <p className="text-body text-center" style={{ color: 'rgba(255,255,255,0.7)' }}>No tasks found in the void.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
